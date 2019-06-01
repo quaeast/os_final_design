@@ -1,0 +1,4 @@
+/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/edit_cache.dir
+/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/deamon.dir
+/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/clinet.dir

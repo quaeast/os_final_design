@@ -1,0 +1,1 @@
+/usr/bin/g++  -g   CMakeFiles/deamon.dir/deamon.cpp.o  -o deamon 

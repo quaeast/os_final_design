@@ -1,0 +1,1 @@
+/usr/bin/g++  -g   CMakeFiles/os_final_design.dir/deamon.cpp.o CMakeFiles/os_final_design.dir/clinet.cpp.o  -o os_final_design 
