@@ -13,5 +13,10 @@ const char* D_to_C_name = "/tmp/D_to_C_fifo";
 const int FFH_BLOCK_SIZE = 1024;
 const int I_NODE_SIZE = 128;
 
+//
+const int K = 1024;
+const int M = 1048576;//1024*1024;
+
+
 
 #endif //OS_FINAL_DESIGN_CONFIG_H

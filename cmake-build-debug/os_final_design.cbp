@@ -187,6 +187,10 @@
 		<Unit filename="/root/os_final_design/daemon.cpp">
 			<Option target="daemon"/>
 		</Unit>
+		<Unit filename="/root/os_final_design/dir.h">
+			<Option target="test"/>
+			<Option target="daemon"/>
+		</Unit>
 		<Unit filename="/root/os_final_design/file_system.cpp">
 			<Option target="test"/>
 			<Option target="daemon"/>
@@ -194,6 +198,11 @@
 		<Unit filename="/root/os_final_design/file_system.h">
 			<Option target="test"/>
 			<Option target="daemon"/>
+		</Unit>
+		<Unit filename="/root/os_final_design/inode.h">
+			<Option target="test"/>
+			<Option target="daemon"/>
+			<Option target="clinet"/>
 		</Unit>
 		<Unit filename="/root/os_final_design/test.cpp">
 			<Option target="test"/>

@@ -6,27 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/root/os_final_design/file_system.cpp
-file_system.h
 /root/os_final_design/file_system.h
-stdio.h
--
-stdlib.h
--
-unistd.h
--
-sys/types.h
--
-sys/stat.h
--
-fcntl.h
--
 
-/root/os_final_design/file_system.h
+/root/os_final_design/inode.h
 
 /root/os_final_design/test.cpp
 iostream
 -
 file_system.h
 /root/os_final_design/file_system.h
+inode.h
+/root/os_final_design/inode.h
 

@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "config.h"
+#include "inode.h"
 
 //size MB
 int init_disk(char *disk_name, int size){
@@ -22,10 +24,12 @@ int init_disk(char *disk_name, int size){
         printf("open failed");
         return -1;
     }
-    int res = ftruncate64(f_d, size*1024);
+    int res = ftruncate64(f_d, size*M);
     close(f_d);
     return res;
 }
+
+
 
 
 int init_file_sys(char *disk_name, int size){
