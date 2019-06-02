@@ -48,10 +48,10 @@ RM = /opt/cmake-3.14.4-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.VoOJsp5OkO
+CMAKE_SOURCE_DIR = /root/os_final_design
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.VoOJsp5OkO/cmake-build-debug
+CMAKE_BINARY_DIR = /root/os_final_design/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles /root/os_final_design/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named deamon
+# Target rules for targets named test
 
 # Build rule for target.
-deamon: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 deamon
-.PHONY : deamon
+test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test
+.PHONY : test
 
 # fast build rule for target.
-deamon/fast:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/build
-.PHONY : deamon/fast
+test/fast:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+.PHONY : test/fast
+
+#=============================================================================
+# Target rules for targets named daemon
+
+# Build rule for target.
+daemon: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 daemon
+.PHONY : daemon
+
+# fast build rule for target.
+daemon/fast:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/build
+.PHONY : daemon/fast
 
 #=============================================================================
 # Target rules for targets named clinet
@@ -163,32 +176,89 @@ clinet.cpp.s:
 	$(MAKE) -f CMakeFiles/clinet.dir/build.make CMakeFiles/clinet.dir/clinet.cpp.s
 .PHONY : clinet.cpp.s
 
-deamon.o: deamon.cpp.o
+daemon.o: daemon.cpp.o
 
-.PHONY : deamon.o
+.PHONY : daemon.o
 
 # target to build an object file
-deamon.cpp.o:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/deamon.cpp.o
-.PHONY : deamon.cpp.o
+daemon.cpp.o:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/daemon.cpp.o
+.PHONY : daemon.cpp.o
 
-deamon.i: deamon.cpp.i
+daemon.i: daemon.cpp.i
 
-.PHONY : deamon.i
+.PHONY : daemon.i
 
 # target to preprocess a source file
-deamon.cpp.i:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/deamon.cpp.i
-.PHONY : deamon.cpp.i
+daemon.cpp.i:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/daemon.cpp.i
+.PHONY : daemon.cpp.i
 
-deamon.s: deamon.cpp.s
+daemon.s: daemon.cpp.s
 
-.PHONY : deamon.s
+.PHONY : daemon.s
 
 # target to generate assembly for a file
-deamon.cpp.s:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/deamon.cpp.s
-.PHONY : deamon.cpp.s
+daemon.cpp.s:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/daemon.cpp.s
+.PHONY : daemon.cpp.s
+
+file_system.o: file_system.cpp.o
+
+.PHONY : file_system.o
+
+# target to build an object file
+file_system.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/file_system.cpp.o
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/file_system.cpp.o
+.PHONY : file_system.cpp.o
+
+file_system.i: file_system.cpp.i
+
+.PHONY : file_system.i
+
+# target to preprocess a source file
+file_system.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/file_system.cpp.i
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/file_system.cpp.i
+.PHONY : file_system.cpp.i
+
+file_system.s: file_system.cpp.s
+
+.PHONY : file_system.s
+
+# target to generate assembly for a file
+file_system.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/file_system.cpp.s
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/file_system.cpp.s
+.PHONY : file_system.cpp.s
+
+test.o: test.cpp.o
+
+.PHONY : test.o
+
+# target to build an object file
+test.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.o
+.PHONY : test.cpp.o
+
+test.i: test.cpp.i
+
+.PHONY : test.i
+
+# target to preprocess a source file
+test.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.i
+.PHONY : test.cpp.i
+
+test.s: test.cpp.s
+
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.s
+.PHONY : test.cpp.s
 
 # Help Target
 help:
@@ -198,14 +268,21 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... deamon"
+	@echo "... test"
+	@echo "... daemon"
 	@echo "... clinet"
 	@echo "... clinet.o"
 	@echo "... clinet.i"
 	@echo "... clinet.s"
-	@echo "... deamon.o"
-	@echo "... deamon.i"
-	@echo "... deamon.s"
+	@echo "... daemon.o"
+	@echo "... daemon.i"
+	@echo "... daemon.s"
+	@echo "... file_system.o"
+	@echo "... file_system.i"
+	@echo "... file_system.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

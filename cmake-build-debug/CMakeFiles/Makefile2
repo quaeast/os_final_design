@@ -59,45 +59,82 @@ RM = /opt/cmake-3.14.4-Linux-x86_64/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.VoOJsp5OkO
+CMAKE_SOURCE_DIR = /root/os_final_design
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.VoOJsp5OkO/cmake-build-debug
+CMAKE_BINARY_DIR = /root/os_final_design/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/deamon.dir
+# Target rules for target CMakeFiles/test.dir
 
 # All Build rule for target.
-CMakeFiles/deamon.dir/all:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/depend
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target deamon"
-.PHONY : CMakeFiles/deamon.dir/all
+CMakeFiles/test.dir/all:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/depend
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/os_final_design/cmake-build-debug/CMakeFiles --progress-num=6,7,8 "Built target test"
+.PHONY : CMakeFiles/test.dir/all
 
 # Include target in all.
-all: CMakeFiles/deamon.dir/all
+all: CMakeFiles/test.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/deamon.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/deamon.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/deamon.dir/rule
+CMakeFiles/test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/test.dir/rule
 
 # Convenience name for target.
-deamon: CMakeFiles/deamon.dir/rule
+test: CMakeFiles/test.dir/rule
 
-.PHONY : deamon
-
-# clean rule for target.
-CMakeFiles/deamon.dir/clean:
-	$(MAKE) -f CMakeFiles/deamon.dir/build.make CMakeFiles/deamon.dir/clean
-.PHONY : CMakeFiles/deamon.dir/clean
+.PHONY : test
 
 # clean rule for target.
-clean: CMakeFiles/deamon.dir/clean
+CMakeFiles/test.dir/clean:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/clean
+.PHONY : CMakeFiles/test.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/test.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/daemon.dir
+
+# All Build rule for target.
+CMakeFiles/daemon.dir/all:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/depend
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/os_final_design/cmake-build-debug/CMakeFiles --progress-num=3,4,5 "Built target daemon"
+.PHONY : CMakeFiles/daemon.dir/all
+
+# Include target in all.
+all: CMakeFiles/daemon.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/daemon.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/daemon.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/daemon.dir/rule
+
+# Convenience name for target.
+daemon: CMakeFiles/daemon.dir/rule
+
+.PHONY : daemon
+
+# clean rule for target.
+CMakeFiles/daemon.dir/clean:
+	$(MAKE) -f CMakeFiles/daemon.dir/build.make CMakeFiles/daemon.dir/clean
+.PHONY : CMakeFiles/daemon.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/daemon.dir/clean
 
 .PHONY : clean
 
@@ -108,7 +145,7 @@ clean: CMakeFiles/deamon.dir/clean
 CMakeFiles/clinet.dir/all:
 	$(MAKE) -f CMakeFiles/clinet.dir/build.make CMakeFiles/clinet.dir/depend
 	$(MAKE) -f CMakeFiles/clinet.dir/build.make CMakeFiles/clinet.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target clinet"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/os_final_design/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target clinet"
 .PHONY : CMakeFiles/clinet.dir/all
 
 # Include target in all.
@@ -118,9 +155,9 @@ all: CMakeFiles/clinet.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/clinet.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/clinet.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/os_final_design/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/clinet.dir/rule
 
 # Convenience name for target.
