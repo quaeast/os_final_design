@@ -10,8 +10,8 @@
 #include <iostream>
 
 #include "config.h"
+#include "file_system.h"
 
-using namespace std;
 
 
 //read the fifo

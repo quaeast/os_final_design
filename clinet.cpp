@@ -16,6 +16,7 @@
 #include "config.h"
 
 using namespace std;
+
 int main()
 {
     int C_to_D_id, D_to_C_id;

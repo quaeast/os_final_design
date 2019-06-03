@@ -8,28 +8,6 @@
 
 /root/os_final_design/config.h
 
-/root/os_final_design/daemon.cpp
-sys/types.h
--
-sys/stat.h
--
-unistd.h
--
-stdlib.h
--
-stdio.h
--
-fcntl.h
--
-limits.h
--
-string.h
--
-iostream
--
-config.h
-/root/os_final_design/config.h
-
 /root/os_final_design/file_system.cpp
 file_system.h
 /root/os_final_design/file_system.h
@@ -45,6 +23,16 @@ sys/stat.h
 -
 fcntl.h
 -
+string.h
+-
+stdio.h
+-
+config.h
+/root/os_final_design/config.h
+inode.h
+/root/os_final_design/inode.h
 
 /root/os_final_design/file_system.h
+
+/root/os_final_design/inode.h
 

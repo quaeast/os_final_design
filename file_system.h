@@ -5,12 +5,17 @@
 #ifndef OS_FINAL_DESIGN_FILE_SYSTEM_H
 #define OS_FINAL_DESIGN_FILE_SYSTEM_H
 
+#include <stdio.h>
 
 //size ->MB
 //default 1GB
-int init_disk(char *disk_name="/tmp/fake_disc", int size=1024);
+int init_disk();
 
-int init_file_sys(char *disk_name="/tmp/fake_disc", int size=1024);
+int init_file_sys();
 
+int find_an_empty_block(unsigned char *buffer, int size);
+
+int make_directory(char* name, unsigned int father_address, FILE *fstream);
 
 #endif //OS_FINAL_DESIGN_FILE_SYSTEM_H
+
