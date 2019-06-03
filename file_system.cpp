@@ -34,6 +34,7 @@ int init_disk(){
 //
 //LSB >>
 //LSB first
+//
 int find_an_empty_block(unsigned char *buffer, int size){
     for (int i = 0; i < size; ++i) {
         unsigned char short_buffer=buffer[i];
@@ -67,9 +68,9 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     for (int i = 0; i < 12; ++i) {
         new_dir.index_list[i]=-1;  //py: 2**32=4294967296 max of unsigned int
     }
-    unsigned int empty_i_node_address = find_an_empty_block(i_node_bitmap, sizeof(i_node_bitmap));
-    unsigned int empty_data_address = find_an_empty_block(data_bitmap, sizeof(data_bitmap));
-    unsigned int another_empty_data_address = find_an_empty_block(data_bitmap, sizeof(data_bitmap));
+    unsigned int empty_i_node_address = I_NODE_SIZE * find_an_empty_block(i_node_bitmap, sizeof(i_node_bitmap));
+    unsigned int empty_data_address = FFS_BLOCK_SIZE * find_an_empty_block(data_bitmap, sizeof(data_bitmap));
+    unsigned int another_empty_data_address = FFS_BLOCK_SIZE * find_an_empty_block(data_bitmap, sizeof(data_bitmap));
     new_dir.index_list[0]=empty_data_address;
     new_dir.index_list[1]=another_empty_data_address;
 
@@ -109,7 +110,7 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
 
         int flag_in_descendant_array=-1;
         for (int i=0; i < 256; ++i) {
-            if(descendant_array[i]!=-1){
+            if(descendant_array[i]==-1){
                 flag_in_descendant_array=i;
                 break;
             }
@@ -117,17 +118,15 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
         if(flag_in_descendant_array==-1){
             return -1;
         }
-
         descendant_array[flag_in_descendant_array]=empty_i_node_address;
         fseek(fstream, DATA_OFFSET+descendant_array_address, SEEK_SET);
         fwrite(descendant_array, 4, 256, fstream);
         free(descendant_array);
-        fwrite(&father_i_node_buffer, I_NODE_SIZE, 1, fstream);
     }
 
     fseek(fstream, 0, SEEK_SET);
     fwrite(i_node_bitmap, 1, 32, fstream);
-    fseek(fstream, K, SEEK_SET);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
     fwrite(data_bitmap, 1, 64*K, fstream);
     return empty_i_node_address;
 }
@@ -159,7 +158,7 @@ int list_descendants(unsigned int father_i_node_address, char *mode, char *resul
     I_NODE father_buffer;
     fseek(fstream, I_NODE_OFFSET+father_i_node_address, SEEK_SET);
     fread(&father_buffer, I_NODE_SIZE, 1, fstream);
-    unsigned int descendant_array_address = father_buffer.index_list[2];
+    unsigned int descendant_array_address = father_buffer.index_list[1];
     unsigned int *descendant_array_buffer = (unsigned int *)calloc(256, 4);
     fseek(fstream, DATA_OFFSET+descendant_array_address, SEEK_SET);
     fread(descendant_array_buffer, 4, 256, fstream);
@@ -183,10 +182,12 @@ int list_descendants(unsigned int father_i_node_address, char *mode, char *resul
         mo_index = 1;
     }
 
+    result[0]=0;
+
     for (int i = 0; i < list_num; ++i) {
-        printf("%s\t", listPrintBuffer->name);
+        sprintf(result ,"%s\t", listPrintBuffer->name);
         if(i%mo_index==0){
-            printf("\n");
+            sprintf(result, "\n");
         }
     }
 

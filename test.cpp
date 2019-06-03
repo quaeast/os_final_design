@@ -17,10 +17,12 @@ int main(){
     int cur=root;
     FILE *fstream = fopen("/tmp/os_final/fake_disk", "rb+");
     char result[100];
+
+    cur = make_directory("fang", root, fstream);
+//    list_descendants(cur, "l", result, fstream);
     print_work_place(cur, result, fstream);
-    printf("%s");
-    list_descendants(cur, "l", result, fstream);
-    printf("%s", result);
+    printf("%d\n", cur);
+    printf("%s\n", result);
     fclose(fstream);
     return 0;
 }
