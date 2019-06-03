@@ -30,11 +30,13 @@ int init_disk(){
     return 0;
 }
 
-//size is the number of byte
+//parameter size is the number of byte
 //
 //LSB >>
 //LSB first
 //
+//return the nth block but real address,
+//so it need to multiply BLOCK_SIZE or I_NODE_SIZE before use
 int find_an_empty_block(unsigned char *buffer, int size){
     for (int i = 0; i < size; ++i) {
         unsigned char short_buffer=buffer[i];
@@ -182,12 +184,15 @@ int list_descendants(unsigned int father_i_node_address, char *mode, char *resul
         mo_index = 1;
     }
 
-    result[0]=0;
 
+    char *result_pointer=result;
     for (int i = 0; i < list_num; ++i) {
-        sprintf(result ,"%s\t", listPrintBuffer->name);
+        sprintf(result_pointer ,"%s\t", listPrintBuffer[i].name);
+        result_pointer+=strlen(result_pointer);
+
         if(i%mo_index==0){
-            sprintf(result, "\n");
+            sprintf(result_pointer, "\n");
+            result_pointer+=strlen(result_pointer);
         }
     }
 

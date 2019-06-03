@@ -19,10 +19,11 @@ int main(){
     char result[100];
 
     cur = make_directory("fang", root, fstream);
-//    list_descendants(cur, "l", result, fstream);
-    print_work_place(cur, result, fstream);
-    printf("%d\n", cur);
-    printf("%s\n", result);
+
+    cur = make_directory("wang", root, fstream);
+    list_descendants(root, "l", result, fstream);
+    printf("%s", result);
+    printf("%d", cur);
     fclose(fstream);
     return 0;
 }
