@@ -15,9 +15,11 @@ int init_file_sys();
 
 int find_an_empty_block(unsigned char *buffer, int size);
 
-int print_work_place(unsigned int i_node_address, FILE *fstream, char *name);
+int print_work_place(unsigned int i_node_address, char *result, FILE *fstream);
 
 int make_directory(char* name, unsigned int father_address, FILE *fstream);
+
+int list_descendants(unsigned int father_i_node_address, char *mode, char *result, FILE *fstream);
 
 #endif //OS_FINAL_DESIGN_FILE_SYSTEM_H
 

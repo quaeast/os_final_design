@@ -10,6 +10,12 @@
 static const int K = 1024;
 static const int M = 1048576;//1024*1024;
 
+//offset
+
+static const int DATA_BITMAP_OFFSET = K;
+static const int I_NODE_OFFSET = 100*K;
+static const int DATA_OFFSET = M;
+
 static const char* C_to_D_name = "/tmp/os_final/C_to_D_fifo";
 static const char* D_to_C_name = "/tmp/os_final/D_to_C_fifo";
 

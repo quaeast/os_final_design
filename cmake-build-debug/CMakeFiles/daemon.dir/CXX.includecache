@@ -33,6 +33,8 @@ inode.h
 /root/os_final_design/inode.h
 
 /root/os_final_design/file_system.h
+stdio.h
+-
 
 /root/os_final_design/inode.h
 

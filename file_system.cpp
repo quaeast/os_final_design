@@ -15,6 +15,7 @@
 
 #include "config.h"
 #include "inode.h"
+#include "list_print_buffer.h"
 
 //size MB
 int init_disk(){
@@ -53,7 +54,7 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     unsigned char data_bitmap[64*K];
     fseek(fstream, 0, SEEK_SET);
     fread(i_node_bitmap, 1, 32, fstream);
-    fseek(fstream, K, SEEK_SET);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
     fread(data_bitmap, 1, 64*K, fstream);
 
     /*
@@ -73,7 +74,7 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     new_dir.index_list[1]=another_empty_data_address;
 
     // write new i node
-    fseek(fstream, 100*K+empty_i_node_address, SEEK_SET);
+    fseek(fstream, I_NODE_OFFSET+empty_i_node_address, SEEK_SET);
     fwrite(&new_dir, I_NODE_SIZE, 1, fstream);
 
     // write father and self to data
@@ -85,10 +86,10 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     address[0]=father_address;
     address[1]=empty_i_node_address;
 
-    fseek(fstream, M+empty_data_address, SEEK_SET);
+    fseek(fstream, DATA_OFFSET+empty_data_address, SEEK_SET);
     fwrite(address, sizeof(unsigned int), 2, fstream);
 
-    fseek(fstream, M+another_empty_data_address, SEEK_SET);
+    fseek(fstream, DATA_OFFSET+another_empty_data_address, SEEK_SET);
     fwrite(descendants, sizeof(unsigned int), 256, fstream);
     free(descendants);
 
@@ -99,15 +100,28 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
 
     if(father_address!=-1){
         I_NODE father_i_node_buffer;
+        fseek(fstream, I_NODE_OFFSET+father_address, SEEK_SET);
         fread(&father_i_node_buffer, I_NODE_SIZE, 1, fstream);
+        unsigned int descendant_array_address=father_i_node_buffer.index_list[1];
+        unsigned int *descendant_array = (unsigned int*)calloc(256, 4);
+        fseek(fstream, DATA_OFFSET+descendant_array_address, SEEK_SET);
+        fread(descendant_array, 4, 256, fstream);
 
-        int i=-1;
-        for (; i < 256; ++i) {
-            
+        int flag_in_descendant_array=-1;
+        for (int i=0; i < 256; ++i) {
+            if(descendant_array[i]!=-1){
+                flag_in_descendant_array=i;
+                break;
+            }
         }
-        if(i==-1){
+        if(flag_in_descendant_array==-1){
             return -1;
         }
+
+        descendant_array[flag_in_descendant_array]=empty_i_node_address;
+        fseek(fstream, DATA_OFFSET+descendant_array_address, SEEK_SET);
+        fwrite(descendant_array, 4, 256, fstream);
+        free(descendant_array);
         fwrite(&father_i_node_buffer, I_NODE_SIZE, 1, fstream);
     }
 
@@ -118,12 +132,66 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     return empty_i_node_address;
 }
 
-int print_work_place(unsigned int i_node_address, FILE *fstream, char *name){
+int print_work_place(unsigned int i_node_address, char *result, FILE *fstream){
     fseek(fstream, 100*K+i_node_address, SEEK_SET);
     I_NODE i_node_buffer;
     fread(&i_node_buffer, I_NODE_SIZE, 1, fstream);
-    strcpy(name, i_node_buffer.name);
+    strcpy(result, i_node_buffer.name);
     return 0;
+}
+
+/*
+ * format:
+ *      l:
+ *      others
+ *
+ * information:
+ *      s: size
+ *      t: time
+ *
+ * order:
+ *      S: size order
+ *      d: default
+ *
+ */
+
+int list_descendants(unsigned int father_i_node_address, char *mode, char *result, FILE *fstream){
+    I_NODE father_buffer;
+    fseek(fstream, I_NODE_OFFSET+father_i_node_address, SEEK_SET);
+    fread(&father_buffer, I_NODE_SIZE, 1, fstream);
+    unsigned int descendant_array_address = father_buffer.index_list[2];
+    unsigned int *descendant_array_buffer = (unsigned int *)calloc(256, 4);
+    fseek(fstream, DATA_OFFSET+descendant_array_address, SEEK_SET);
+    fread(descendant_array_buffer, 4, 256, fstream);
+    ListPrintBuffer *listPrintBuffer = (ListPrintBuffer *)calloc(256, sizeof(ListPrintBuffer));
+    int list_num=0;
+    for (int i = 0; i < 256; ++i) {
+        if(descendant_array_buffer[i]!=-1){
+            int cur_i_node_addr=descendant_array_buffer[i];
+            fseek(fstream, I_NODE_OFFSET+cur_i_node_addr, SEEK_SET);
+            I_NODE descendent_buffer;
+            fread(&descendent_buffer, I_NODE_SIZE, 1, fstream);
+            strcpy(listPrintBuffer[list_num].name, descendent_buffer.name);
+            /*
+             * 还有其他功能没有写
+             */
+            list_num++;
+        }
+    }
+    int mo_index=5;
+    if(strchr(mode, 'l')){
+        mo_index = 1;
+    }
+
+    for (int i = 0; i < list_num; ++i) {
+        printf("%s\t", listPrintBuffer->name);
+        if(i%mo_index==0){
+            printf("\n");
+        }
+    }
+
+    free(descendant_array_buffer);
+    free(listPrintBuffer);
 }
 
 int init_file_sys(){
