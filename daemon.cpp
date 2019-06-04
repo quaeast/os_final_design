@@ -26,6 +26,7 @@ int main()
 
 
 
+
     if(access(C_to_D_name, F_OK)==-1 || access(D_to_C_name, F_OK)==-1){
         printf("can't creat named fifo.\n");
         return 1;

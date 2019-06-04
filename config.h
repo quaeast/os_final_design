@@ -21,7 +21,7 @@ static const char* D_to_C_name = "/tmp/os_final/D_to_C_fifo";
 
 //1024B->1KB every small BLOCK
 static const int FFS_BLOCK_SIZE = 1024;
-static const int I_NODE_SIZE = 100;
+static const int I_NODE_SIZE = 104;
 static const int DISK_SIZE = 513 * M;
 
 //

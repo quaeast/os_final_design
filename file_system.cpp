@@ -6,12 +6,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "inode.h"
@@ -58,6 +55,15 @@ int find_an_empty_block(unsigned char *buffer, int size){
         }
     }
     return -1;
+}
+
+
+//
+int free_block(unsigned char *buffer, int address){
+    int buffer_addr = address/8;
+    int char_addr = address%8;
+    unsigned char mask = 1<<char_addr;
+    buffer[buffer_addr]^=mask;
 }
 
 
@@ -135,7 +141,7 @@ int list_descendants(unsigned int father_i_node_address, char *mode, char *resul
     free(listPrintBuffer);
 }
 
-int make_directory(char* name, unsigned int father_address, FILE *fstream){
+int make_file(char* name, unsigned int father_address, char file_type, FILE *fstream){
     char list_result[100];
     list_descendants(father_address, "l", list_result, fstream);
     if(strstr(list_result, name)){
@@ -154,10 +160,10 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
      * and write to the file
      */
     INode new_dir;
-    new_dir.file_type='d';
+    new_dir.file_type = file_type;
     strcpy(new_dir.name, name);
     for (int i = 0; i < 12; ++i) {
-        new_dir.index_list[i]=-1;  //py: 2**32=4294967296 max of unsigned int
+        new_dir.index_list[i] = -1;  //py: 2**32=4294967296 max of unsigned int
     }
     unsigned int empty_i_node_address = I_NODE_SIZE * find_an_empty_block(i_node_bitmap, sizeof(i_node_bitmap));
     unsigned int empty_data_address = FFS_BLOCK_SIZE * find_an_empty_block(data_bitmap, sizeof(data_bitmap));
@@ -222,6 +228,8 @@ int make_directory(char* name, unsigned int father_address, FILE *fstream){
     return empty_i_node_address;
 }
 
+
+
 //root i node('/') address is 0
 int init_file_sys(){
     if(access(DISK_NAME, F_OK)!=0){
@@ -235,7 +243,7 @@ int init_file_sys(){
     free(buffer);
 
     char root_name[48]="/";
-    int root_i_node_address = make_directory(root_name, -1, fstream);
+    int root_i_node_address = make_file(root_name, -1, 'd', fstream);
     char name[48];
     fclose(fstream);
     return root_i_node_address;
@@ -266,11 +274,35 @@ int find_descendant_address_with_name(unsigned int father_i_node_address, char *
     return -1;
 }
 
-
+// return i node address
 int change_directory(unsigned int current_i_node_address, char *destination, FILE *fstream){
+    if(strcmp(destination, ".")==0){
+        return current_i_node_address;
+    }
+    if(strcmp(destination, "..")==0){
+        return get_father_INode_address(current_i_node_address, fstream);
+
+    }
+
     INode i_node_buffer;
     get_INode(&i_node_buffer, current_i_node_address, fstream);
-
+    unsigned int loop_current_address = current_i_node_address;
+    if(destination[0]=='/'){
+        loop_current_address = 0;
+    }
+    char *loop_descendant_name_buffer;
+    char *strtok_pointer;
+    char destination_buffer[100];
+    strcpy(destination_buffer, destination);
+    loop_descendant_name_buffer = strtok_r(destination_buffer, "/", &strtok_pointer);
+    while (loop_descendant_name_buffer){
+        if(loop_current_address==-1){
+            return -1;
+        }
+        loop_current_address = find_descendant_address_with_name(loop_current_address, loop_descendant_name_buffer, fstream);
+        loop_descendant_name_buffer = strtok_r(NULL, "/", &strtok_pointer);
+    }
+    return loop_current_address;
 }
 
 void strrev(char *str){
@@ -282,7 +314,7 @@ void strrev(char *str){
     }
 }
 
-int print_work_place(unsigned int i_node_address, char *result, FILE *fstream){
+int print_work_directory(unsigned int i_node_address, char *result, FILE *fstream){
     unsigned int cur_i_node_address = i_node_address;
     char *str_pointer=result;
     while (cur_i_node_address!=-1){
@@ -296,7 +328,6 @@ int print_work_place(unsigned int i_node_address, char *result, FILE *fstream){
     result[strlen(result)-1] = 0;
     strrev(result);
     result[strlen(result)-1] = 0;
-    printf(result);
     return 0;
 }
 

@@ -204,6 +204,11 @@
 			<Option target="daemon"/>
 			<Option target="clinet"/>
 		</Unit>
+		<Unit filename="/root/os_final_design/list_print_buffer.h">
+			<Option target="test"/>
+			<Option target="daemon"/>
+			<Option target="clinet"/>
+		</Unit>
 		<Unit filename="/root/os_final_design/test.cpp">
 			<Option target="test"/>
 		</Unit>

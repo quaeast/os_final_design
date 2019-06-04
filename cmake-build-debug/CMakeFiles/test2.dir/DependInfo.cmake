@@ -4,8 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/tmp/tmp.VoOJsp5OkO/clinet.cpp" "/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/os_final_design.dir/clinet.cpp.o"
-  "/tmp/tmp.VoOJsp5OkO/deamon.cpp" "/tmp/tmp.VoOJsp5OkO/cmake-build-debug/CMakeFiles/os_final_design.dir/deamon.cpp.o"
+  "/root/os_final_design/test2.cpp" "/root/os_final_design/cmake-build-debug/CMakeFiles/test2.dir/test2.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
