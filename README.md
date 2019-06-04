@@ -31,9 +31,9 @@
 
 I_NODE的地址和数据块的地址都用 unsigned int
 
-这里面存的地址都是相对于各个数据块的<font color=red>**逻辑地址**</font>，而不是实际地址。
+这里面存的地址都是相对于各个数据块的<font color=red>**逻辑地址**</font>，单位为byte，而不是实际地址。
 
-### I_NODE位图
+### I_NODE位图F
 
 假设有256个INODE，那么大小为 256bit(32B)。 
 

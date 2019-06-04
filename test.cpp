@@ -4,27 +4,21 @@
 
 #include <iostream>
 #include <stdio.h>
-#include <string.h>
 
 #include "file_system.h"
-
 using namespace std;
+
+//int argc, char * argv[]
 
 int main(){
     init_disk();
     int root = init_file_sys();
-//    int root=0;
-    int cur=root;
     FILE *fstream = fopen("/tmp/os_final/fake_disk", "rb+");
-    char result[100];
-
-    cur = make_directory("fang", root, fstream);
-
-    cur = make_directory("wang", root, fstream);
-    list_descendants(root, "l", result, fstream);
-    printf("%s", result);
-    printf("%d", cur);
-    fclose(fstream);
+    int cur = make_directory("fang", root, fstream);
+    cur = make_directory("wang", cur, fstream);
+    int fa = get_father_INode_address(cur, fstream);
+    char res[48];
+    print_work_place(cur, res, fstream);
     return 0;
 }
 

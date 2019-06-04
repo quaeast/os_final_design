@@ -4,9 +4,11 @@
 CMakeFiles/daemon.dir/daemon.cpp.o: ../config.h
 CMakeFiles/daemon.dir/daemon.cpp.o: ../daemon.cpp
 CMakeFiles/daemon.dir/daemon.cpp.o: ../file_system.h
+CMakeFiles/daemon.dir/daemon.cpp.o: ../inode.h
 
 CMakeFiles/daemon.dir/file_system.cpp.o: ../config.h
 CMakeFiles/daemon.dir/file_system.cpp.o: ../file_system.cpp
 CMakeFiles/daemon.dir/file_system.cpp.o: ../file_system.h
 CMakeFiles/daemon.dir/file_system.cpp.o: ../inode.h
+CMakeFiles/daemon.dir/file_system.cpp.o: ../list_print_buffer.h
 

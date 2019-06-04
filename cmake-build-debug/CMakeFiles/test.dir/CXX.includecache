@@ -6,17 +6,5 @@
 
 #IncludeRegexTransform: 
 
-/root/os_final_design/file_system.h
-stdio.h
--
-
 /root/os_final_design/test.cpp
-iostream
--
-stdio.h
--
-string.h
--
-file_system.h
-/root/os_final_design/file_system.h
 

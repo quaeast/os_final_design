@@ -8,6 +8,7 @@
 struct ListPrintBuffer{
     char name[48];
     char time[20]; // 2019-06-03-4:12:45
+    char type;      //f/d
     int size=-1;
 };
 

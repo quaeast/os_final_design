@@ -9,7 +9,7 @@
 //4294967296 means none
 
 //100B
-struct I_NODE{
+struct INode{
     char name[48];
     // index 12k
     unsigned int index_list[12];
@@ -18,6 +18,6 @@ struct I_NODE{
     char file_type;
 };
 
-typedef struct I_NODE I_NODE;
+typedef struct INode INode;
 
 #endif //OS_FINAL_DESIGN_INODE_H
