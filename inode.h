@@ -16,7 +16,6 @@ struct INode{
     //d -> directory
     //f -> file
     char file_type;
-    int link = 0;
 };
 
 typedef struct INode INode;

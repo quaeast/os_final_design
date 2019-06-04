@@ -21,25 +21,52 @@ int get_INode(INode *i_node_buffer, unsigned int i_node_address, FILE *fstream){
     return 0;
 }
 
+int write_INode(INode *i_node_buffer, unsigned int i_node_address, FILE *fstream){
+    fseek(fstream, I_NODE_OFFSET+i_node_address, SEEK_SET);
+    fwrite(i_node_buffer, I_NODE_SIZE, 1, fstream);
+    return 0;
+}
+
 int get_data(int *buffer, unsigned int data_address, FILE *fstream){
     fseek(fstream, DATA_OFFSET+data_address, SEEK_SET);
     fread(buffer, sizeof(int), 256, fstream);
+    return 0;
 }
 
-int get_father_INode_address(unsigned int current_address, FILE *fstream){
-    INode i_node_buffer;
-    get_INode(&i_node_buffer, current_address, fstream);
-    int *first_data = (int *)calloc(256, sizeof(int));
-    get_data(first_data, i_node_buffer.index_list[0], fstream);
-    int result = first_data[0];
-    free(first_data);
-    return result;
+int write_data(int *buffer, unsigned int data_address, FILE *fstream){
+    fseek(fstream, DATA_OFFSET+data_address, SEEK_SET);
+    fwrite(buffer, sizeof(int), 256, fstream);
+    return 0;
 }
+
+
+int duplicate_data(unsigned int source_data_address, FILE *fstream){
+    unsigned char *data_bit_map = (unsigned char*)calloc(64*K, 1);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fread(data_bit_map, 1, 64*K, fstream);
+
+    int *data_buffer = (int *)calloc(256, sizeof(int));
+    fseek(fstream, DATA_OFFSET+source_data_address, SEEK_SET);
+    fread(data_buffer, sizeof(int), 256, fstream);
+
+    int duplicate_address = K * find_an_empty_block(data_bit_map, sizeof(data_bit_map));
+    fseek(fstream, DATA_OFFSET+duplicate_address, SEEK_SET);
+    fwrite(data_buffer, sizeof(int), 256, fstream);
+
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fwrite(data_bit_map, 1, 64*K, fstream);
+    free(data_bit_map);
+    free(data_buffer);
+}
+
+
 
 //parameter size is the number of byte
 //
 //LSB >>
 //LSB first
+//
+//!!!!!
 //
 //return the nth block but real address,
 //so it need to multiply BLOCK_SIZE or I_NODE_SIZE before use
@@ -58,7 +85,10 @@ int find_an_empty_block(unsigned char *buffer, int size){
 }
 
 
+//!!!!!!!
 //
+//return the nth block but real address,
+//so it need to multiply BLOCK_SIZE or I_NODE_SIZE before use
 int free_block(unsigned char *buffer, int address){
     int buffer_addr = address/8;
     int char_addr = address%8;
@@ -66,6 +96,16 @@ int free_block(unsigned char *buffer, int address){
     buffer[buffer_addr]^=mask;
 }
 
+
+int get_father_INode_address(unsigned int current_address, FILE *fstream){
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, current_address, fstream);
+    int *first_data = (int *)calloc(256, sizeof(int));
+    get_data(first_data, i_node_buffer.index_list[0], fstream);
+    int result = first_data[0];
+    free(first_data);
+    return result;
+}
 
 //size MB
 int init_disk(){
@@ -331,5 +371,68 @@ int print_work_directory(unsigned int i_node_address, char *result, FILE *fstrea
     return 0;
 }
 
+
+int copy(unsigned int father_i_node_address, char *source_name, char *target_name, FILE *fstream){
+    int source_i_node_address = change_directory(father_i_node_address, source_name, fstream);
+    int target_i_node_father_address = change_directory(father_i_node_address, target_name, fstream);
+    if(source_i_node_address==-1){
+        return -1;
+    }
+    char new_sub_name[strlen(target_name)+1];
+    new_sub_name[0]=0;
+
+
+    //没有考虑最简单的情况
+    //目录下一个文件的情况
+    if(target_i_node_father_address==-1){
+        // get rid of the tail
+        char target_name_buffer[strlen(target_name)+1];
+        strcpy(target_name_buffer, target_name);
+        if(target_i_node_father_address==-1){
+            int i;
+            for (i = strlen(target_name_buffer)-1; i>=0; --i) {
+                if(target_name_buffer[i]=='/'){
+                    strcpy(new_sub_name, target_name_buffer+i+1);
+                    target_name_buffer[i+1]=0;
+                    break;
+                }
+            }
+        }
+        target_i_node_father_address = change_directory(father_i_node_address, target_name_buffer, fstream);
+        if(target_i_node_father_address==-1){
+            return -1;
+        }
+    }
+
+
+
+
+    //renew index_list and duplicate data
+    INode source_i_node_buffer;
+    get_INode(&source_i_node_buffer, source_i_node_address, fstream);
+    if(new_sub_name[0]==0){
+        strcpy(new_sub_name, source_i_node_buffer.name);
+    }
+    char fake_name[2];
+    int target_i_node_address =  make_file(fake_name, target_i_node_father_address, 'f', fstream);
+    if(target_i_node_address==-1){
+        return -1;
+    }
+    INode target_i_node_buffer;
+    get_INode(&target_i_node_buffer, target_i_node_address, fstream);
+    int target_i_node_first_array_address = target_i_node_buffer.index_list[0];
+    target_i_node_buffer = source_i_node_buffer;
+    target_i_node_buffer.index_list[0]=target_i_node_first_array_address;
+    for (int j = 1; j < 12; ++j) {
+        if(source_i_node_buffer.index_list[j]!=-1){
+            target_i_node_buffer.index_list[j]=duplicate_data(source_i_node_buffer.index_list[j], fstream);
+        }
+    }
+    write_INode(&target_i_node_buffer, target_i_node_address, fstream);
+    return 0;
+}
+
+
+int delete_file(){}
 
 
