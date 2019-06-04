@@ -1,5 +1,0 @@
-/root/os_final_design/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/root/os_final_design/cmake-build-debug/CMakeFiles/edit_cache.dir
-/root/os_final_design/cmake-build-debug/CMakeFiles/test.dir
-/root/os_final_design/cmake-build-debug/CMakeFiles/daemon.dir
-/root/os_final_design/cmake-build-debug/CMakeFiles/clinet.dir
