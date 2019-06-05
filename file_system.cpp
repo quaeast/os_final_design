@@ -69,6 +69,7 @@ int duplicate_data(unsigned int source_data_address, FILE *fstream){
     fwrite(data_bit_map, 1, 64*K, fstream);
     free(data_bit_map);
     free(data_buffer);
+    return duplicate_address;
 }
 
 
@@ -436,11 +437,8 @@ int copy(unsigned int father_i_node_address, char *source_name, char *target_nam
     INode target_i_node_buffer;
     get_INode(&target_i_node_buffer, target_i_node_address, fstream);
     target_i_node_buffer.file_type = source_i_node_buffer.file_type;
-    for (int j = 1; j < 12; ++j) {
-        if(source_i_node_buffer.index_list[j]!=-1){
-            target_i_node_buffer.index_list[j]=duplicate_data(source_i_node_buffer.index_list[j], fstream);
-        }
-    }
+    target_i_node_buffer.index_list[2]=duplicate_data(source_i_node_buffer.index_list[2], fstream);
+    printf("cp: new file data address: %d\n", target_i_node_buffer.index_list[2]);
     write_INode(&target_i_node_buffer, target_i_node_address, fstream);
     return 0;
 }
@@ -450,9 +448,9 @@ int move(){}
 int rename(unsigned int cur, char *old_name, char *new_name, FILE *fstream){
     unsigned int i_node_address = find_descendant_address_with_name(cur,  old_name, fstream);
     INode i_node_buffer;
-    get_INode(&i_node_buffer, i_node_address,fstream);
+    get_INode(&i_node_buffer, i_node_address, fstream);
     strcpy(i_node_buffer.name, new_name);
-    write_INode(&i_node_buffer, i_node_address,fstream);
+    write_INode(&i_node_buffer, i_node_address, fstream);
     return 0;
 }
 
@@ -471,10 +469,6 @@ int delete_file(unsigned int cur, char * target, FILE *fstream){
     free(address_data_buffer);
     return 0;
 }
-
-
-
-
 
 int write_text(char *data, unsigned int i_node_address, FILE *fstream){
     INode i_node_buffer;
@@ -513,14 +507,6 @@ int write_text(char *data, unsigned int i_node_address, FILE *fstream){
     write_data_char(data_buffer, data_address, fstream);
     printf("write address %d\n", data_address);
 
-    //
-
-    INode test_buffer;
-    get_INode(&test_buffer, i_node_address, fstream);
-    printf("test address: %d\n", test_buffer.index_list[2]);
-
-    //
-
     return 0;
 }
 
@@ -537,4 +523,18 @@ int catch_file(char *data, unsigned int i_node_address, FILE *fstream){
     return 0;
 }
 
+int import(char *source, char *target, unsigned int cur, FILE *fstream){
+    unsigned int target_i_node_address = make_file(target, cur, 'f', fstream);
+    FILE *sys_fp = fopen(source, "r+");
+    char *data = (char *)calloc(4096, 1);
+    fread(data, 1, 4096, sys_fp);
+
+
+    printf("sys txt data: %s\n", data);
+
+    write_text(data, target_i_node_address, fstream);
+    fclose(sys_fp);
+    free(data);
+    return 0;
+}
 

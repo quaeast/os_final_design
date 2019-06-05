@@ -42,6 +42,7 @@ int main()
         read(C_to_D_id, buffer, PIPE_BUF);
         //
 
+        printf(">-----------------------------------------\n");
         printf("command: %s\nsplit: \n", buffer);
 
         //
@@ -111,7 +112,6 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if (strcmp(main_cmd, "rename")==0){
-            char *target = strtok(NULL, " ");
             rename(cur, sub_cmd, target, fstream);
             buffer[0]=0;
             write(D_to_C_id, buffer, PIPE_BUF);
@@ -140,19 +140,24 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if(strcmp(main_cmd, "export")==0){
+            char real_target[100] = "/tmp/export";
+            if(target!=NULL){
+                strcpy(real_target, target);
+            }
             int target_address = find_descendant_address_with_name(cur, sub_cmd, fstream);
             if(target_address==-1){
                 printf("can not find target!\n");
             }
             catch_file(buffer, target_address, fstream);
-            char real_trget[100] = "/tmp/export";
-            if(target!=NULL){
-                strcpy(real_trget, target);
-            }
-            FILE *fp = fopen(real_trget, "w+");
+            FILE *fp = fopen(real_target, "w+");
             printf(buffer);
             fwrite(buffer, 4, strlen(buffer), fp);
             fclose(fp);
+            write(D_to_C_id, buffer, PIPE_BUF);
+        }
+        else if(strcmp(main_cmd, "import")==0){
+            import(sub_cmd, target, cur, fstream);
+            buffer[0]=0;
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if(strcmp(main_cmd, "clear")==0){
@@ -175,3 +180,5 @@ int main()
 //    unlink(D_to_C_name);
     return 0;
 }
+
+

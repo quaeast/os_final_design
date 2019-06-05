@@ -50,5 +50,7 @@ int write_text(char *data, unsigned int i_node_address, FILE *fstream);
 
 int catch_file(char *data, unsigned int i_node_address, FILE *fstream);
 
+int import(char *source, char *target, unsigned int cur, FILE *fstream);
+
 #endif //OS_FINAL_DESIGN_FILE_SYSTEM_H
 
