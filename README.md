@@ -58,4 +58,27 @@ I_NODE的地址和数据块的地址都用 unsigned int
 所以开513MB，第一个MB用来存其他内容。
 
 
+## 实现命令如下
+
+<br>
+
+命令 | 功能
+:-: | :-: 
+init | 创建 /tmp/fake_disk，并初始化文件系统
+open | 挂载fake_disk
+ls | 显示目录
+pwd| 打印当前工作路径
+cd| 改变工作路径
+touch| 创建文件
+mkdir| 创建文件夹
+cp| 复制
+rm| 删除
+rename| 重命名
+vim| 写入文件
+cat| 显示文件
+export| 到处到系统磁盘
+import| 从磁盘导入
+clear| 清屏
+exit| 退出
+
 

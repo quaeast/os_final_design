@@ -14,9 +14,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="31d30378-9786-4ed6-99ff-78a2fa1f4170" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/daemon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/daemon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file_system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/file_system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file_system.h" beforeDir="false" afterPath="$PROJECT_DIR$/file_system.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,7 +44,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/daemon.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1244">
+            <state relative-caret-position="897">
               <caret line="113" column="48" selection-start-line="113" selection-start-column="48" selection-end-line="113" selection-end-column="48" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
@@ -293,12 +291,12 @@
       <workItem from="1559661458989" duration="4451000" />
       <workItem from="1559693385947" duration="14831000" />
       <workItem from="1559712719755" duration="72000" />
-      <workItem from="1559723894234" duration="6916000" />
+      <workItem from="1559723894234" duration="7378000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="112092000" />
+    <option name="totallyTimeSpent" value="112554000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -317,7 +315,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4993895" visible="true" weight="0.87058824" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4993895" visible="true" weight="0.13368984" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -558,7 +556,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/daemon.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1244">
+        <state relative-caret-position="897">
           <caret line="113" column="48" selection-start-line="113" selection-start-column="48" selection-end-line="113" selection-end-column="48" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
