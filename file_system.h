@@ -42,5 +42,13 @@ int find_descendant_address_with_name(unsigned int father_i_node_address, char *
 
 int copy(unsigned int father_i_node_address, char *source_name, char *target_name, FILE *fstream);
 
+int rename(unsigned int cur, char *old_name, char *new_name, FILE *fstream);
+
+int delete_file(unsigned int cur, char * target, FILE *fstream);
+
+int write_text(char *data, unsigned int i_node_address, FILE *fstream);
+
+int catch_file(char *data, unsigned int i_node_address, FILE *fstream);
+
 #endif //OS_FINAL_DESIGN_FILE_SYSTEM_H
 

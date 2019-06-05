@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+
 #include "config.h"
 #include "inode.h"
 #include "list_print_buffer.h"
@@ -39,6 +40,17 @@ int write_data(int *buffer, unsigned int data_address, FILE *fstream){
     return 0;
 }
 
+int get_data_char(char *buffer, unsigned int data_address, FILE *fstream){
+    fseek(fstream, DATA_OFFSET+data_address, SEEK_SET);
+    fread(buffer, sizeof(char), K, fstream);
+    return 0;
+}
+
+int write_data_char(char *buffer, unsigned int data_address, FILE *fstream){
+    fseek(fstream, DATA_OFFSET+data_address, SEEK_SET);
+    fwrite(buffer, sizeof(char), K, fstream);
+    return 0;
+}
 
 int duplicate_data(unsigned int source_data_address, FILE *fstream){
     unsigned char *data_bit_map = (unsigned char*)calloc(64*K, 1);
@@ -355,6 +367,11 @@ void strrev(char *str){
 }
 
 int print_work_directory(unsigned int i_node_address, char *result, FILE *fstream){
+    if(i_node_address==0){
+        result[0]='/';
+        result[1]=0;
+        return 0;
+    }
     unsigned int cur_i_node_address = i_node_address;
     char *str_pointer=result;
     while (cur_i_node_address!=-1){
@@ -382,28 +399,27 @@ int copy(unsigned int father_i_node_address, char *source_name, char *target_nam
     new_sub_name[0]=0;
 
 
-    //没有考虑最简单的情况
-    //目录下一个文件的情况
     if(target_i_node_father_address==-1){
         // get rid of the tail
         char target_name_buffer[strlen(target_name)+1];
         strcpy(target_name_buffer, target_name);
-        if(target_i_node_father_address==-1){
-            int i;
-            for (i = strlen(target_name_buffer)-1; i>=0; --i) {
-                if(target_name_buffer[i]=='/'){
-                    strcpy(new_sub_name, target_name_buffer+i+1);
-                    target_name_buffer[i+1]=0;
-                    break;
-                }
+        int i;
+        for (i = strlen(target_name_buffer)-1; i>=0; --i) {
+            if(target_name_buffer[i]=='/'){
+                strcpy(new_sub_name, target_name_buffer+i+1);
+                target_name_buffer[i+1]=0;
+                break;
             }
         }
         target_i_node_father_address = change_directory(father_i_node_address, target_name_buffer, fstream);
-        if(target_i_node_father_address==-1){
-            return -1;
-        }
+
     }
 
+
+    if (target_i_node_father_address==-1){
+        strcpy(new_sub_name, target_name);
+        target_i_node_father_address = father_i_node_address;
+    }
 
 
 
@@ -413,16 +429,13 @@ int copy(unsigned int father_i_node_address, char *source_name, char *target_nam
     if(new_sub_name[0]==0){
         strcpy(new_sub_name, source_i_node_buffer.name);
     }
-    char fake_name[2];
-    int target_i_node_address =  make_file(fake_name, target_i_node_father_address, 'f', fstream);
+    int target_i_node_address =  make_file(new_sub_name, target_i_node_father_address, '0', fstream);
     if(target_i_node_address==-1){
         return -1;
     }
     INode target_i_node_buffer;
     get_INode(&target_i_node_buffer, target_i_node_address, fstream);
-    int target_i_node_first_array_address = target_i_node_buffer.index_list[0];
-    target_i_node_buffer = source_i_node_buffer;
-    target_i_node_buffer.index_list[0]=target_i_node_first_array_address;
+    target_i_node_buffer.file_type = source_i_node_buffer.file_type;
     for (int j = 1; j < 12; ++j) {
         if(source_i_node_buffer.index_list[j]!=-1){
             target_i_node_buffer.index_list[j]=duplicate_data(source_i_node_buffer.index_list[j], fstream);
@@ -432,7 +445,83 @@ int copy(unsigned int father_i_node_address, char *source_name, char *target_nam
     return 0;
 }
 
+int move(){}
 
-int delete_file(){}
+int rename(unsigned int cur, char *old_name, char *new_name, FILE *fstream){
+    unsigned int i_node_address = find_descendant_address_with_name(cur,  old_name, fstream);
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, i_node_address,fstream);
+    strcpy(i_node_buffer.name, new_name);
+    write_INode(&i_node_buffer, i_node_address,fstream);
+    return 0;
+}
+
+int delete_file(unsigned int cur, char * target, FILE *fstream){
+    unsigned int i_node_address = find_descendant_address_with_name(cur,  target, fstream);
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, cur, fstream);
+    int *address_data_buffer = (int *)calloc(256, sizeof(unsigned int));
+    get_data(address_data_buffer, i_node_buffer.index_list[1], fstream);
+    for (int i = 0; i < 256; ++i) {
+        if(address_data_buffer[i]==i_node_address){
+            address_data_buffer[i]=-1;
+        }
+    }
+    write_data(address_data_buffer, i_node_buffer.index_list[1], fstream);
+    free(address_data_buffer);
+    return 0;
+}
+
+
+
+
+
+int write_text(char *data, unsigned int i_node_address, FILE *fstream){
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, i_node_address, fstream);
+    int empty_index=2;
+//    for (int i = 1; i < 12; ++i) {
+//        if(i_node_buffer.index_list[i]==-1){
+//            empty_index=i;
+//            break;
+//        }
+//    }
+//    if(empty_index==-1){
+//        return -1;
+//    }
+    unsigned char *data_bitmap_buffer = (unsigned char*)calloc(64*K, sizeof(unsigned char));
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fread(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
+
+    int data_address = K * find_an_empty_block(data_bitmap_buffer, sizeof(data_bitmap_buffer));
+    i_node_buffer.index_list[empty_index]=data_address;
+
+    write_INode(&i_node_buffer, i_node_address, fstream);
+
+
+    char *data_buffer = (char *)calloc(K, 1);
+    strcpy(data_buffer, data);
+    write_data_char(data_buffer, data_address, fstream);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fwrite(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
+    free(data_bitmap_buffer);
+    printf("data address %d\n", data_address);
+    return 0;
+}
+
+int catch_file(char *data, unsigned int i_node_address, FILE *fstream){
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, i_node_address, fstream);
+    int data_index=2;
+
+    unsigned int data_address = i_node_buffer.index_list[data_index];
+
+    printf("address %d\n", data_address);
+
+    data_address = 4096;
+
+    get_data_char(data, data_address, fstream);
+    return 0;
+}
 
 

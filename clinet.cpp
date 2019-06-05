@@ -15,6 +15,8 @@
 #include <iostream>
 
 #include "config.h"
+#include "mystring.h"
+
 
 using namespace std;
 
@@ -30,11 +32,21 @@ int main()
         cin.getline(buffer, sizeof(buffer));
         write(C_to_D_id, buffer, PIPE_BUF);
         read(D_to_C_id, buffer, PIPE_BUF);
-        printf("%s", buffer);
 
         // judge exit
-        if(strcmp(buffer, "good bye")==0){
+        if(strcmp(buffer, "good bye\n")==0){
+            printf(buffer);
             break;
+        }
+        else if(strcmp(buffer, "vim")==0){
+            printf("%s\n", "vim_started");
+            vim(buffer);
+            write(C_to_D_id, buffer, PIPE_BUF);
+            read(D_to_C_id, buffer, PIPE_BUF);
+            printf(buffer);
+        }
+        else{
+            printf(buffer);
         }
         buffer[0]=0;
     }

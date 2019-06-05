@@ -3,7 +3,7 @@ project(os_final_design)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(daemon daemon.cpp config.h file_system.h file_system.cpp inode.h dir.h list_print_buffer.h)
-add_executable(clinet clinet.cpp config.h inode.h list_print_buffer.h)
-add_executable(test test.cpp config.h file_system.h file_system.cpp inode.h dir.h list_print_buffer.h)
+add_executable(daemon file_system.cpp daemon.cpp  )
+add_executable(clinet file_system.cpp clinet.cpp )
+add_executable(test file_system.cpp test.cpp )
 

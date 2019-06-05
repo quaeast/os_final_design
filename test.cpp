@@ -5,6 +5,7 @@
 #include <stdio.h>
 //#include <memory.h>
 //#include <string.h>
+#include "mystring.h"
 #include "file_system.h"
 
 //FILE *fstream = fopen("/tmp/os_final/fake_disk", "rb+");
@@ -14,13 +15,17 @@ int main(){
     init_disk();
     int root = init_file_sys();
     FILE *fstream = fopen("/tmp/os_final/fake_disk", "rb+");
-    int cur = make_file("fang", root, 'd', fstream);
+    make_file("fang", root, 'd', fstream);
+    unsigned int liu_add = make_file("liu.txt", root, 'f', fstream);
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, liu_add, fstream);
+    i_node_buffer.index_list[2]=1000;
+    write_INode(&i_node_buffer, liu_add, fstream);
 
-    copy(root, "fang", "wang", fstream);
+    INode i_node_buffer2;
+    get_INode(&i_node_buffer2, liu_add, fstream);
+    printf("%d", i_node_buffer2.index_list[2]);
 
-    char result[100];
-    list_descendants(root, "l", result, fstream);
-    printf(result);
     return 0;
 }
 
