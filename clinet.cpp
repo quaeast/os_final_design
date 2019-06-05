@@ -45,6 +45,9 @@ int main()
             read(D_to_C_id, buffer, PIPE_BUF);
             printf(buffer);
         }
+        else if(strcmp(buffer, "clear")==0){
+            system("clear");
+        }
         else{
             printf(buffer);
         }

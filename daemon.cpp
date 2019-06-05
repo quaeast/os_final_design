@@ -42,15 +42,15 @@ int main()
         read(C_to_D_id, buffer, PIPE_BUF);
         //
 
-        printf("%s\n", buffer);
+        printf("command: %s\nsplit: \n", buffer);
 
         //
         char *main_cmd= strtok(buffer, " ");
         char *sub_cmd = strtok(NULL, " ");
-
+        char *target = strtok(NULL, " ");
         //
 
-        printf("%s\t%s\n", main_cmd, sub_cmd);
+        printf("%s\t%s\t%s\n", main_cmd, sub_cmd, target);
 
         //
 
@@ -75,6 +75,7 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if (strcmp(main_cmd, "ls")==0){
+            buffer[0]=0;
             list_descendants(cur, "l", buffer, fstream);
             write(D_to_C_id, buffer, PIPE_BUF);
         }
@@ -100,7 +101,6 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if(strcmp(main_cmd, "cp")==0){
-            char *target = strtok(NULL, " ");
             copy(cur, sub_cmd, target, fstream);
             buffer[0]=0;
             write(D_to_C_id, buffer, PIPE_BUF);
@@ -117,16 +117,19 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if (strcmp(main_cmd, "vim")==0){
-            strcpy(buffer, "vim");
-            write(D_to_C_id, buffer, PIPE_BUF);
-            read(C_to_D_id, buffer, PIPE_BUF);
+            char *vim_buffer = (char *)calloc(PIPE_BUF, 1);
+            strcpy(vim_buffer, "vim");
+            write(D_to_C_id, vim_buffer, PIPE_BUF);
+            read(C_to_D_id, vim_buffer, PIPE_BUF);
+            printf("%s\t", sub_cmd);
             int target_address = find_descendant_address_with_name(cur, sub_cmd, fstream);
             if(target_address==-1){
                 printf("can not find target!\n");
             }
-            write_text(buffer, target_address, fstream);
-            strcpy(buffer, "vim exit\n");
-            write(D_to_C_id, buffer, PIPE_BUF);
+            write_text(vim_buffer, target_address, fstream);
+            strcpy(vim_buffer, "vim exit\n");
+            write(D_to_C_id, vim_buffer, PIPE_BUF);
+            printf(vim_buffer);
         }
         else if(strcmp(main_cmd, "cat")==0){
             int target_address = find_descendant_address_with_name(cur, sub_cmd, fstream);
@@ -141,19 +144,25 @@ int main()
             if(target_address==-1){
                 printf("can not find target!\n");
             }
-
             catch_file(buffer, target_address, fstream);
-            FILE *fp = fopen("/tmp/export", "w+");
+            char real_trget[100] = "/tmp/export";
+            if(target!=NULL){
+                strcpy(real_trget, target);
+            }
+            FILE *fp = fopen(real_trget, "w+");
             printf(buffer);
             fwrite(buffer, 4, strlen(buffer), fp);
             fclose(fp);
             write(D_to_C_id, buffer, PIPE_BUF);
         }
-
+        else if(strcmp(main_cmd, "clear")==0){
+            write(D_to_C_id, buffer, PIPE_BUF);
+        }
         else{
             sprintf(buffer, "%s%s", main_cmd, ": command not found.\n");
             write(D_to_C_id, buffer, PIPE_BUF);
         }
+        printf("result:\n");
         printf(buffer);
         buffer[0]=0;
     }

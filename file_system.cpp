@@ -479,22 +479,31 @@ int delete_file(unsigned int cur, char * target, FILE *fstream){
 int write_text(char *data, unsigned int i_node_address, FILE *fstream){
     INode i_node_buffer;
     get_INode(&i_node_buffer, i_node_address, fstream);
-    int empty_index=2;
-//    for (int i = 1; i < 12; ++i) {
-//        if(i_node_buffer.index_list[i]==-1){
-//            empty_index=i;
-//            break;
-//        }
-//    }
-//    if(empty_index==-1){
-//        return -1;
-//    }
-    unsigned char *data_bitmap_buffer = (unsigned char*)calloc(64*K, sizeof(unsigned char));
-    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
-    fread(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
+    unsigned int data_address = i_node_buffer.index_list[2];
 
-    int data_address = K * find_an_empty_block(data_bitmap_buffer, sizeof(data_bitmap_buffer));
-    i_node_buffer.index_list[empty_index]=data_address;
+    //
+    printf(i_node_buffer.name);
+    printf("\tlist[n]");
+    for (int i = 0; i < 12; ++i) {
+        printf("%d\t", i_node_buffer.index_list[i]);
+    }
+    printf("\n");
+
+    //
+
+    if(data_address==-1){
+        unsigned char *data_bitmap_buffer = (unsigned char*)calloc(64*K, sizeof(unsigned char));
+        fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+        fread(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
+
+        data_address = K * find_an_empty_block(data_bitmap_buffer, sizeof(data_bitmap_buffer));
+        i_node_buffer.index_list[2]=data_address;
+
+        fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+        fwrite(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
+        free(data_bitmap_buffer);
+        printf("alloc\n");
+    }
 
     write_INode(&i_node_buffer, i_node_address, fstream);
 
@@ -502,23 +511,27 @@ int write_text(char *data, unsigned int i_node_address, FILE *fstream){
     char *data_buffer = (char *)calloc(K, 1);
     strcpy(data_buffer, data);
     write_data_char(data_buffer, data_address, fstream);
-    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
-    fwrite(data_bitmap_buffer, sizeof(unsigned char), 64*K, fstream);
-    free(data_bitmap_buffer);
-    printf("data address %d\n", data_address);
+    printf("write address %d\n", data_address);
+
+    //
+
+    INode test_buffer;
+    get_INode(&test_buffer, i_node_address, fstream);
+    printf("test address: %d\n", test_buffer.index_list[2]);
+
+    //
+
     return 0;
 }
 
 int catch_file(char *data, unsigned int i_node_address, FILE *fstream){
     INode i_node_buffer;
     get_INode(&i_node_buffer, i_node_address, fstream);
-    int data_index=2;
 
-    unsigned int data_address = i_node_buffer.index_list[data_index];
+    unsigned int data_address = i_node_buffer.index_list[2];
 
-    printf("address %d\n", data_address);
-
-    data_address = 4096;
+    printf("cat file name: %s\n", i_node_buffer.name);
+    printf("cat address: %d\n", data_address);
 
     get_data_char(data, data_address, fstream);
     return 0;
