@@ -575,7 +575,7 @@ int write_text(char *data, unsigned int i_node_address, FILE *fstream){
     get_INode(&i_node_buffer, i_node_address, fstream);
     unsigned int data_address = i_node_buffer.index_list[2];
 
-    //
+    //print log
     printf(i_node_buffer.name);
     printf("\tlist[n]");
     for (int i = 0; i < 12; ++i) {
