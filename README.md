@@ -60,12 +60,14 @@ I_NODE的地址和数据块的地址都用 unsigned int
 
 ## 实现命令如下
 
+
 <br>
+共16条
 
 命令 | 功能
 :-: | :-: 
 init | 创建 /tmp/fake_disk，并初始化文件系统
-open | 挂载fake_disk
+open | 挂载 /tmp/fake_disk
 ls | 显示目录
 pwd| 打印当前工作路径
 cd| 改变工作路径
@@ -76,7 +78,7 @@ rm| 删除
 rename| 重命名
 vim| 写入文件
 cat| 显示文件
-export| 到处到系统磁盘
+export| 导出到系统磁盘
 import| 从磁盘导入
 clear| 清屏
 exit| 退出

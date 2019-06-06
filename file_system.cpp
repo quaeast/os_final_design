@@ -103,6 +103,10 @@ int find_an_empty_block(unsigned char *buffer, int size){
 //return the nth block but real address,
 //so it need to multiply BLOCK_SIZE or I_NODE_SIZE before use
 int free_block(unsigned char *buffer, int address){
+    printf("free address: %d\n", address);
+    if(address!=-1){
+        return 0;
+    }
     int buffer_addr = address/8;
     int char_addr = address%8;
     unsigned char mask = 1<<char_addr;
@@ -197,8 +201,14 @@ int list_descendants(unsigned int father_i_node_address, char *mode, char *resul
 int make_file(char* name, unsigned int father_address, char file_type, FILE *fstream){
     char list_result[100];
     list_descendants(father_address, "l", list_result, fstream);
-    if(strstr(list_result, name)){
-        return -1;
+    char *list_every_name_buffer;
+    list_every_name_buffer = strtok(list_result, " ");
+    while (list_every_name_buffer){
+        if(strcmp(list_every_name_buffer, name)==0){
+            printf("make_file: name used\n");
+            return 0;
+        }
+        list_every_name_buffer = strtok(NULL, " ");
     }
 
     unsigned char i_node_bitmap[32];
@@ -455,6 +465,14 @@ int rename(unsigned int cur, char *old_name, char *new_name, FILE *fstream){
 }
 
 int delete_file(unsigned int cur, char * target, FILE *fstream){
+    unsigned char *i_node_bit_map_buffer = (unsigned char *)calloc(32, 1);
+    unsigned char *data_bit_map_buffer = (unsigned char *)calloc(64*K, 1);
+    fseek(fstream, 0, SEEK_SET);
+    fread(i_node_bit_map_buffer, 1, 32, fstream);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fread(data_bit_map_buffer, 1, 64*K, fstream);
+
+    // delete from father i_node
     unsigned int i_node_address = find_descendant_address_with_name(cur,  target, fstream);
     INode i_node_buffer;
     get_INode(&i_node_buffer, cur, fstream);
@@ -467,6 +485,88 @@ int delete_file(unsigned int cur, char * target, FILE *fstream){
     }
     write_data(address_data_buffer, i_node_buffer.index_list[1], fstream);
     free(address_data_buffer);
+
+    get_INode(&i_node_buffer, i_node_address, fstream);
+
+
+
+    free_block(i_node_bit_map_buffer, i_node_address/I_NODE_SIZE);
+    for (int i = 0; i < 3; ++i) {
+        if (i_node_buffer.index_list[i]==-1){
+            continue;
+        }
+        free_block(data_bit_map_buffer, i_node_buffer.index_list[i]/FFS_BLOCK_SIZE);
+    }
+
+    printf("free bitmap ok\n");
+
+    fseek(fstream, 0, SEEK_SET);
+    fwrite(i_node_bit_map_buffer, 1, 32, fstream);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fwrite(data_bit_map_buffer, 1, 64*K, fstream);
+    free(i_node_bit_map_buffer);
+    free(data_bit_map_buffer);
+    return 0;
+}
+
+int recursive_delete(unsigned int target_directory_address, unsigned char *i_node_bitmap,
+        unsigned char *data_bitmap, FILE *fstream){
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, target_directory_address, fstream);
+    free_block(i_node_bitmap, target_directory_address/I_NODE_SIZE);
+    for (int i = 0; i < 3; ++i) {
+        if(i_node_buffer.index_list[i]!=-1){
+            continue;
+        }
+        free_block(data_bitmap, i_node_buffer.index_list[i]/FFS_BLOCK_SIZE);
+    }
+    printf("%c\n", i_node_buffer.file_type);
+    if(i_node_buffer.file_type=='f'){
+        return 0;
+    }
+    int *decendant_address_buffer = (int *)calloc(256, sizeof(int));
+    get_data(decendant_address_buffer, i_node_buffer.index_list[1], fstream);
+    for (int i = 0; i < 256; ++i) {
+        if(decendant_address_buffer[i]!=-1){
+            recursive_delete(decendant_address_buffer[i], i_node_bitmap, data_bitmap, fstream);
+        }
+    }
+    return 0;
+}
+
+int delete_directory(unsigned int cur, char * target, FILE *fstream){
+    unsigned char *i_node_bit_map_buffer = (unsigned char *)calloc(32, 1);
+    unsigned char *data_bit_map_buffer = (unsigned char *)calloc(64*K, 1);
+    fseek(fstream, 0, SEEK_SET);
+    fread(i_node_bit_map_buffer, 1, 32, fstream);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fread(data_bit_map_buffer, 1, 64*K, fstream);
+
+    // delete from father i_node
+    unsigned int i_node_address = find_descendant_address_with_name(cur,  target, fstream);
+    INode i_node_buffer;
+    get_INode(&i_node_buffer, cur, fstream);
+    int *address_data_buffer = (int *)calloc(256, sizeof(unsigned int));
+    get_data(address_data_buffer, i_node_buffer.index_list[1], fstream);
+    for (int i = 0; i < 256; ++i) {
+        if(address_data_buffer[i]==i_node_address){
+            address_data_buffer[i]=-1;
+        }
+    }
+    write_data(address_data_buffer, i_node_buffer.index_list[1], fstream);
+    free(address_data_buffer);
+
+
+    recursive_delete(i_node_address, i_node_bit_map_buffer, data_bit_map_buffer, fstream);
+
+    printf("free bitmap ok\n");
+
+    fseek(fstream, 0, SEEK_SET);
+    fwrite(i_node_bit_map_buffer, 1, 32, fstream);
+    fseek(fstream, DATA_BITMAP_OFFSET, SEEK_SET);
+    fwrite(data_bit_map_buffer, 1, 64*K, fstream);
+    free(i_node_bit_map_buffer);
+    free(data_bit_map_buffer);
     return 0;
 }
 
@@ -525,6 +625,19 @@ int catch_file(char *data, unsigned int i_node_address, FILE *fstream){
 
 int import(char *source, char *target, unsigned int cur, FILE *fstream){
     unsigned int target_i_node_address = make_file(target, cur, 'f', fstream);
+    for (int i = 0; i < 9; ++i) {
+        if(target_i_node_address==-1){
+            int len = strlen(target);
+            target[len] = '0'+i;
+            target[len+1] = 0;
+            target_i_node_address = make_file(target, cur, 'f', fstream);
+        } else{
+            break;
+        }
+    }
+    if (target_i_node_address==-1){
+        return -1;
+    }
     FILE *sys_fp = fopen(source, "r+");
     char *data = (char *)calloc(4096, 1);
     fread(data, 1, 4096, sys_fp);

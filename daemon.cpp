@@ -107,7 +107,13 @@ int main()
             write(D_to_C_id, buffer, PIPE_BUF);
         }
         else if (strcmp(main_cmd, "rm")==0){
-            delete_file(cur, sub_cmd, fstream);
+            if(strcmp("-r", sub_cmd)==0){
+                delete_file(cur, sub_cmd, fstream);
+//                delete_directory(cur, sub_cmd, fstream);
+            }
+            else{
+                delete_file(cur, sub_cmd, fstream);
+            }
             buffer[0]=0;
             write(D_to_C_id, buffer, PIPE_BUF);
         }

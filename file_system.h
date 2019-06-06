@@ -46,6 +46,11 @@ int rename(unsigned int cur, char *old_name, char *new_name, FILE *fstream);
 
 int delete_file(unsigned int cur, char * target, FILE *fstream);
 
+int recursive_delete(unsigned int target_directory_address,
+        unsigned char *i_node_bitmap, unsigned char *data_bitmap, FILE *fstream);
+
+int delete_directory(unsigned int cur, char * target, FILE *fstream);
+
 int write_text(char *data, unsigned int i_node_address, FILE *fstream);
 
 int catch_file(char *data, unsigned int i_node_address, FILE *fstream);
