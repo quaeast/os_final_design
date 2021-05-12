@@ -1,1 +1,5 @@
 cmake-build-debug/
+target/
+.idea/
+.DS_Store
+

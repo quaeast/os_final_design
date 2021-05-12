@@ -2,6 +2,20 @@
 
 北林操作系统期末课程设计
 
+## 运行
+
+操作系统为Linux
+
+```bash
+mkdir target
+cd target
+cmake ../
+make
+# 运行后台
+./daemon
+# 在另一个窗口运行客户端
+./client
+```
 ## 前后台
 
 前后台是独立的进程，依靠linux的命名管道进行通信。具体实现是开两个单向的管道。
